@@ -1,0 +1,4 @@
+name: CitePlugin
+version: '${version}'
+main: fr.citeplugin.CitePlugin
+api-version: '1.19'
