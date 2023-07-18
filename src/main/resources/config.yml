@@ -1,0 +1,27 @@
+teams:
+  red:
+    spawn:
+      world: world
+      x: 0
+      y: 64
+      z: 0
+    trades:
+      trade1:
+        item: EMERALD
+        cost: 3
+      trade2:
+        item: DIAMOND
+        cost: 5
+  blue:
+    spawn:
+      world: world
+      x: 10
+      y: 64
+      z: 0
+    trades:
+      trade1:
+        item: IRON_INGOT
+        cost: 2
+      trade2:
+        item: GOLD_INGOT
+        cost: 4
