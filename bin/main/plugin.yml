@@ -1,0 +1,24 @@
+name: CitePlugin
+version: '${version}'
+main: fr.citeplugin.CitePlugin
+api-version: '1.19'
+commands:
+  createTeam:
+    description: Crée une nouvelle équipe
+    usage: /createTeam <nom> <couleur> <nombre_max_joueurs>
+  setSpawn:
+    description: Définit l'emplacement de spawn de l'équipe
+    usage: /setSpawn <nom de l'équipe>
+  joinTeam:
+    description: Rejoint une équipe
+    usage: /joinTeam <nom de l'équipe>
+  leaveTeam:
+    description: Quitte l'équipe actuelle
+    usage: /leaveTeam
+  deleteTeam:
+    description: Supprime une équipe existante
+    usage: /deleteTeam <nom de l'équipe>
+  setTeamSize:
+    description: Redéfinit la taille maximale d'une équipe existante
+    usage: /setTeamSize <nom de l'équipe> <nombre_max_joueurs>
+

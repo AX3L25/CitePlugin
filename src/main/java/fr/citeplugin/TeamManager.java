@@ -18,7 +18,7 @@ public class TeamManager {
     private final Scoreboard scoreboard;
     private final FileConfiguration teamsConfig;
 
-    public TeamManager(TeamManager teamManager, Scoreboard scoreboard, FileConfiguration teamsConfig) {
+    public TeamManager(Scoreboard scoreboard, FileConfiguration teamsConfig) {
         this.scoreboard = scoreboard;
         this.teamsConfig = teamsConfig;
     }
