@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -36,15 +37,8 @@ public class CitePlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        getCommand("createTeam").setExecutor(new CreateTeamCommand(teamManager));
-        getCommand("setSpawn").setExecutor(new SetSpawnCommand(spawnManager));
-        getCommand("joinTeam").setExecutor(new JoinTeamCommand(teamManager, playerTeams));
-        getCommand("leaveTeam").setExecutor(new LeaveTeamCommand(playerTeams));
-        getCommand("deleteTeam").setExecutor(new DeleteTeamCommand(scoreboard, playerTeams));
-        getCommand("setTeamSize").setExecutor(new SetTeamSizeCommand(scoreboard));
         // Chargement de la configuration depuis le fichier config.yml
         saveDefaultConfig();
-        FileConfiguration config = getConfig();
 
         // Initialisation des variables
         playerTeams = new HashMap<>();
@@ -61,14 +55,18 @@ public class CitePlugin extends JavaPlugin implements Listener {
         teamsConfig = YamlConfiguration.loadConfiguration(teamsFile);
 
         // Initialisation des gestionnaires
-        teamManager = new TeamManager(teamManager, scoreboard, teamsConfig);
+        teamManager = new TeamManager(scoreboard, teamsConfig);
         spawnManager = new SpawnManager(this, teamsConfig, getDataFolder());
         tradeManager = new TradeManager(playerTeams, playerPoints, teamsConfig);
 
-        // Enregistrement des événements
         getServer().getPluginManager().registerEvents(this, this);
 
-        getLogger().info("Plugin Cité activé !");
+        getCommand("createTeam").setExecutor(new CreateTeamCommand(teamManager));
+        getCommand("setSpawn").setExecutor(new SetSpawnCommand(spawnManager));
+        getCommand("joinTeam").setExecutor(new JoinTeamCommand(teamManager, playerTeams));
+        getCommand("leaveTeam").setExecutor(new LeaveTeamCommand(playerTeams));
+        getCommand("deleteTeam").setExecutor(new DeleteTeamCommand(scoreboard, playerTeams));
+        getCommand("setTeamSize").setExecutor(new SetTeamSizeCommand(scoreboard));
     }
 
     @Override
@@ -77,14 +75,14 @@ public class CitePlugin extends JavaPlugin implements Listener {
     }
 
     public <CommandSender> boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("createTeam")) {
-            return teamManager.createTeam((org.bukkit.command.CommandSender) sender, args);
-        } else if (command.getName().equalsIgnoreCase("setSpawn")) {
-            return spawnManager.setSpawn((org.bukkit.command.CommandSender) sender, args);
-        } else if (command.getName().equalsIgnoreCase("joinTeam")) {
-            return teamManager.joinTeam((org.bukkit.command.CommandSender) sender, args, playerTeams);
+        switch (command.getName().toLowerCase()) {
+            case "createteam":
+                return teamManager.createTeam((org.bukkit.command.CommandSender) sender, args);
+            case "setspawn":
+                return spawnManager.setSpawn((org.bukkit.command.CommandSender) sender, args);
+            case "jointeam":
+                return teamManager.joinTeam((org.bukkit.command.CommandSender) sender, args, playerTeams);
         }
-
         return false;
     }
 
@@ -126,4 +124,17 @@ public class CitePlugin extends JavaPlugin implements Listener {
             event.getPlayer().sendMessage(ChatColor.GREEN + "Ce villageois est maintenant un PNJ pour les échanges !");
         }
     }
+
+    @EventHandler
+    public void onCommand(ServerCommandEvent event) {
+        if (event.getCommand().equalsIgnoreCase("spawnVillager")) {
+            Player player = Bukkit.getPlayer(event.getSender().getName());
+            if (player != null) {
+                Villager villager = (Villager) player.getWorld().spawnEntity(player.getLocation(), EntityType.VILLAGER);
+                villager.setAI(false);
+            }
+        }
+
+    }
 }
+
